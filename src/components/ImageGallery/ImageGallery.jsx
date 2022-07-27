@@ -6,7 +6,7 @@ import Modal from 'components/common/Modal/Modal';
 
 export class ImageGallery extends Component {
   state = {
-    imageIdToOpen: ''
+    imageToOpen: ''
   }
 
   static defaultProps = {
