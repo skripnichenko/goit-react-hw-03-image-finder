@@ -14,9 +14,9 @@ export class App extends Component {
   }
 
   apiCall = async (searchedValue = '', page = 1) => {
-    this.setState({isLoading: true})
+    this.setState({ isLoading: true })
     const resp = await axios.get(`https://pixabay.com/api/?q=${searchedValue}&page=${page}&key=28843000-997a7736ac02a37994c6fbbd0&image_type=photo&orientation=horizontal&per_page=12`).then(({ data }) => data.hits)
-    this.setState({isLoading: false});
+    this.setState({ isLoading: false });
     return resp;
   }
 
@@ -28,10 +28,20 @@ export class App extends Component {
   }
 
   loadMore = async () => {
-    const nextPage = this.state.page + 1;
+    const nextPage = this.state.page;
     const images = await this.apiCall(this.state.searchedValue, nextPage);
     const newImagesList = this.state.images.concat(images)
-    this.setState({images: newImagesList})
+    this.setState({ images: newImagesList })
+  }
+
+  changePage = () => {
+    this.setState((prevState) => ({ page: prevState.page + 1 }))
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.page !== this.state.page) {
+      this.loadMore();
+    }
   }
 
   render() {
@@ -42,7 +52,7 @@ export class App extends Component {
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery images={images} />
         {isLoading && <Loader />}
-        {!!images.length && <Button loadMore={this.loadMore} />}
+        {!!images.length && <Button loadMore={this.changePage} />}
       </div>
     )
   }
