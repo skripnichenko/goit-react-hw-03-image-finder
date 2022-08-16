@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { getImages } from 'api/api';
 import React, { Component } from 'react'
 import Button from './common/Button/Button'
 import Loader from './common/Loader/Loader'
@@ -15,7 +15,7 @@ export class App extends Component {
 
   apiCall = async (searchedValue = '', page = 1) => {
     this.setState({ isLoading: true })
-    const resp = await axios.get(`https://pixabay.com/api/?q=${searchedValue}&page=${page}&key=28843000-997a7736ac02a37994c6fbbd0&image_type=photo&orientation=horizontal&per_page=12`).then(({ data }) => data.hits)
+    const resp = await getImages(searchedValue, page);
     this.setState({ isLoading: false });
     return resp;
   }
@@ -23,13 +23,12 @@ export class App extends Component {
   onSubmit = async (e) => {
     e.preventDefault();
     const searchedValue = e.currentTarget.elements.searchFormInput.value;
-    const images = await this.apiCall(searchedValue, this.state.page);
-    this.setState({ images, searchedValue });
+    this.setState({ searchedValue, page: 1, images: [] });
   }
 
-  loadMore = async () => {
-    const nextPage = this.state.page;
-    const images = await this.apiCall(this.state.searchedValue, nextPage);
+  loadImages = async () => {
+    const page = this.state.page;
+    const images = await this.apiCall(this.state.searchedValue, page);
     const newImagesList = this.state.images.concat(images)
     this.setState({ images: newImagesList })
   }
@@ -39,13 +38,13 @@ export class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.page !== this.state.page) {
-      this.loadMore();
+    if (prevState.page !== this.state.page || prevState.searchedValue !== this.state.searchedValue) {
+      this.loadImages();
     }
   }
 
   render() {
-    const { images, isLoading } = this.state;
+    const { images, isLoading, page } = this.state;
 
     return (
       <div className='App'>

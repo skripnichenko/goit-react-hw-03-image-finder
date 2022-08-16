@@ -14,7 +14,7 @@ export class ImageGallery extends Component {
   };
 
   static propTypes = {
-    images: PropTypes.arrayOf(PropTypes.object),
+    images: PropTypes.arrayOf(PropTypes.object).isRequired,
   };
 
   setOpenImage = (largeImageURL) => {
@@ -31,14 +31,14 @@ export class ImageGallery extends Component {
 
     return (
       <>
-      {!!imageToOpen && <Modal removeImageToOpen={this.removeImageToOpen}>
-        <img src={imageToOpen} alt=''/>
-      </Modal>}
-        <ul className={styles.imageGallery}>
-          {images.length ? images.map(el => {
+        {!!imageToOpen && <Modal removeImageToOpen={this.removeImageToOpen}>
+          <img src={imageToOpen} alt='' />
+        </Modal>}
+        {images.length ? <ul className={styles.imageGallery}>
+          {images.map(el => {
             return <ImageGalleryItem key={el.id} largeImageURL={el.largeImageURL} webformatURL={el.webformatURL} setOpenImage={this.setOpenImage} />
-          }) : <></>}
-        </ul>
+          })}
+        </ul> : <></>}
       </>
     )
   }
