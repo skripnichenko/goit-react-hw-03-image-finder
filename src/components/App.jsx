@@ -44,7 +44,7 @@ export class App extends Component {
   }
 
   render() {
-    const { images, isLoading, page } = this.state;
+    const { images, isLoading } = this.state;
 
     return (
       <div className='App'>
